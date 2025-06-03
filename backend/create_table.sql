@@ -24,7 +24,7 @@ CREATE TABLE appointment (
   service_id INT REFERENCES service(service_id),
   date DATE NOT NULL,
   time TIME NOT NULL,
-  status_id int REFERENCES status(id)
+  status_id int REFERENCES status(id) DEFAULT 1
 );
 
 CREATE TABLE types (
