@@ -93,3 +93,13 @@ INSERT INTO users (username, address, email, hash_password, phone, role_id) VALU
 INSERT INTO users (username, address, email, hash_password, phone, role_id) VALUES ('Yee Ling', 'Yishun', 'ling@testing.com', '123example','88833222', 1);
 
 
+-- 先添加新字段
+ALTER TABLE appointment ADD COLUMN appointment_datetime TIMESTAMP;
+
+-- 将旧的 date + time 合并进新字段
+UPDATE appointment
+SET appointment_datetime = date + time;
+
+-- 删除旧字段
+ALTER TABLE appointment DROP COLUMN date;
+ALTER TABLE appointment DROP COLUMN time;

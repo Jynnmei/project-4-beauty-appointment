@@ -14,14 +14,21 @@ export const getAllServices = async (req, res) => {
 
 // PUT
 export const createAppointment = async (req, res) => {
-  const { client_id, type_id, vendor_id, service_id, date, time } = req.body;
+  const { client_id, type_id, vendor_id, service_id, appointment_datetime } =
+    req.body;
 
   try {
     const query = `
-      INSERT INTO appointment (client_id, type_id, vendor_id, service_id, date, time)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO appointment (client_id, type_id, vendor_id, service_id, appointment_datetime)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *`;
-    const values = [client_id, type_id, vendor_id, service_id, date, time];
+    const values = [
+      client_id,
+      type_id,
+      vendor_id,
+      service_id,
+      appointment_datetime,
+    ];
     const result = await pool.query(query, values);
 
     res.json({ status: "ok", msg: "Appointment created" });
@@ -36,7 +43,8 @@ export const createAppointment = async (req, res) => {
 // PATCH
 export const updateAppointment = async (req, res) => {
   const { appointment_id } = req.params;
-  const { client_id, type_id, vendor_id, service_id, date, time } = req.body;
+  const { client_id, type_id, vendor_id, service_id, appointment_datetime } =
+    req.body;
 
   try {
     const result = await pool.query(
@@ -47,12 +55,18 @@ export const updateAppointment = async (req, res) => {
         type_id = COALESCE($2, type_id),
         vendor_id = COALESCE($3, vendor_id),
         service_id = COALESCE($4, service_id),
-        date = COALESCE($5, date),
-        time = COALESCE($6, time)
-      WHERE appointment_id = $7
+        appointment_datetime = COALESCE($5, appointment_datetime )
+      WHERE appointment_id = $6
       RETURNING *;
       `,
-      [client_id, type_id, vendor_id, service_id, date, time, appointment_id]
+      [
+        client_id,
+        type_id,
+        vendor_id,
+        service_id,
+        appointment_datetime,
+        appointment_id,
+      ]
     );
 
     if (result.rows.length === 0) {
