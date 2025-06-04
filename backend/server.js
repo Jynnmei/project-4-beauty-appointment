@@ -8,6 +8,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import authRoutes from "./src/routers/auth.js";
 import appointmentRoutes from "./src/routers/appointments.js";
+import serviceRoutes from "./src/routers/service.js";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/appointment", appointmentRoutes);
+app.use("/api/service", serviceRoutes);
 
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {

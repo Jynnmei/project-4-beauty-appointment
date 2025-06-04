@@ -3,7 +3,6 @@ import {
   createAppointment,
   deleteAppointmentById,
   getAllAppointment,
-  getAllServices,
   getAppointmentById,
   updateAppointment,
 } from "../controllers/appointments.js";
@@ -17,8 +16,6 @@ import checkError from "../validators/checkError.js";
 import { authClient } from "../middleware/auth.js";
 
 const router = express.Router();
-
-router.get("/services", checkError, getAllServices);
 
 router.put(
   "/",

@@ -1,17 +1,5 @@
 import { pool } from "../db/db.js";
 
-export const getAllServices = async (req, res) => {
-  try {
-    const result = await pool.query(
-      "SELECT * FROM service_catalog ORDER BY catalog_id"
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error(error.message);
-    res.status(400).json({ status: "error", msg: "Failed to get services" });
-  }
-};
-
 // PUT
 export const createAppointment = async (req, res) => {
   const { client_id, type_id, vendor_id, service_id, appointment_datetime } =
