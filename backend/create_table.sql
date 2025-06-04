@@ -27,6 +27,19 @@ CREATE TABLE appointment (
   status_id int REFERENCES status(id) DEFAULT 1
 );
 
+-- 先添加新字段
+ALTER TABLE appointment ADD COLUMN appointment_datetime TIMESTAMP;
+
+-- 将旧的 date + time 合并进新字段
+UPDATE appointment
+SET appointment_datetime = date + time;
+
+-- 删除旧字段
+ALTER TABLE appointment DROP COLUMN date;
+ALTER TABLE appointment DROP COLUMN time;
+
+ALTER TABLE appointment ADD COLUMN updated_at TIMESTAMP;
+
 CREATE TABLE types (
 	id serial PRIMARY KEY,
 	name varchar(20) NOT NULL UNIQUE
@@ -93,13 +106,3 @@ INSERT INTO users (username, address, email, hash_password, phone, role_id) VALU
 INSERT INTO users (username, address, email, hash_password, phone, role_id) VALUES ('Yee Ling', 'Yishun', 'ling@testing.com', '123example','88833222', 1);
 
 
--- 先添加新字段
-ALTER TABLE appointment ADD COLUMN appointment_datetime TIMESTAMP;
-
--- 将旧的 date + time 合并进新字段
-UPDATE appointment
-SET appointment_datetime = date + time;
-
--- 删除旧字段
-ALTER TABLE appointment DROP COLUMN date;
-ALTER TABLE appointment DROP COLUMN time;
