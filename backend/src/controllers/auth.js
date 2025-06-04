@@ -3,17 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 import jwt from "jsonwebtoken";
 import { pool } from "../db/db.js";
 
-export const getAllUsers = async (req, res) => {
-  try {
-    const result = await pool.query(`SELECT username, role_id FROM users`);
-
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error(error.message);
-    res.status(400).json({ status: "error", msg: "error getting users" });
-  }
-};
-
 export const register = async (req, res) => {
   const {
     username = "",

@@ -9,6 +9,7 @@ import rateLimit from "express-rate-limit";
 import authRoutes from "./src/routers/auth.js";
 import appointmentRoutes from "./src/routers/appointments.js";
 import serviceRoutes from "./src/routers/service.js";
+import usersRoutes from "./src/routers/users.js";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/users", usersRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/service", serviceRoutes);
 
