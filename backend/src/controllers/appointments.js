@@ -5,26 +5,51 @@ export const createAppointment = async (req, res) => {
   const { client_id, type_id, vendor_id, service_id, appointment_datetime } =
     req.body;
 
+  const client = await pool.connect();
+
   try {
-    const query = `
+    await client.query("BEGIN");
+
+    // appointment table
+    const appointmentQuery = `
       INSERT INTO appointment (client_id, type_id, vendor_id, service_id, appointment_datetime)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *`;
-    const values = [
+    const appointmentValues = [
       client_id,
       type_id,
       vendor_id,
       service_id,
       appointment_datetime,
     ];
-    const result = await pool.query(query, values);
+    const appointmentResult = await client.query(
+      appointmentQuery,
+      appointmentValues
+    );
+    const appointment_id = appointmentResult.rows[0].appointment_id;
 
+    // appointment_service table
+    await client.query(
+      `INSERT INTO appointment_service (appointment_id, service_id) VALUES ($1, $2)`,
+      [appointment_id, service_id]
+    );
+
+    // appointment_vendor table
+    await client.query(
+      `INSERT INTO appointment_vendor (appointment_id, vendor_id) VALUES ($1, $2)`,
+      [appointment_id, vendor_id]
+    );
+
+    await client.query("COMMIT");
     res.json({ status: "ok", msg: "Appointment created" });
   } catch (error) {
+    await client.query("ROLLBACK");
     console.error(error.message);
     res
       .status(400)
       .json({ status: "error", msg: "Failed to create appointment" });
+  } finally {
+    client.release();
   }
 };
 
@@ -34,9 +59,12 @@ export const updateAppointment = async (req, res) => {
   const { client_id, type_id, vendor_id, service_id, appointment_datetime } =
     req.body;
 
+  const client = await pool.connect();
+
   try {
-    const result = await pool.query(
-      `
+    await client.query("BEGIN");
+
+    const updateMainQuery = `
       UPDATE appointment
       SET
         client_id = COALESCE($1, client_id),
@@ -46,29 +74,58 @@ export const updateAppointment = async (req, res) => {
         appointment_datetime = COALESCE($5, appointment_datetime )
       WHERE appointment_id = $6
       RETURNING *;
-      `,
-      [
-        client_id,
-        type_id,
-        vendor_id,
-        service_id,
-        appointment_datetime,
-        appointment_id,
-      ]
-    );
+      `;
+    const result = await client.query(updateMainQuery, [
+      client_id,
+      type_id,
+      vendor_id,
+      service_id,
+      appointment_datetime,
+      appointment_id,
+    ]);
 
     if (result.rows.length === 0) {
+      await client.query("ROLLBACK");
       return res
         .status(404)
         .json({ status: "error", msg: "Appointment not found" });
     }
 
+    // delete old data
+    await client.query(
+      `DELETE FROM appointment_service WHERE appointment_id = $1`,
+      [appointment_id]
+    );
+    await client.query(
+      `DELETE FROM appointment_vendor WHERE appointment_id = $1`,
+      [appointment_id]
+    );
+
+    // insert new data
+    if (service_id) {
+      await client.query(
+        `INSERT INTO appointment_service (appointment_id, service_id) VALUES ($1, $2)`,
+        [appointment_id, service_id]
+      );
+    }
+
+    if (vendor_id) {
+      await client.query(
+        `INSERT INTO appointment_vendor (appointment_id, vendor_id) VALUES ($1, $2)`,
+        [appointment_id, vendor_id]
+      );
+    }
+
+    await client.query("COMMIT");
     res.json({ status: "ok", msg: "Appointment updated" });
   } catch (error) {
+    await client.query("ROLLBACK");
     console.error(error.message);
     res
       .status(400)
       .json({ status: "error", msg: "Error updating appointment" });
+  } finally {
+    client.release();
   }
 };
 

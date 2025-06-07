@@ -106,3 +106,4 @@ INSERT INTO users (username, address, email, hash_password, phone, role_id) VALU
 INSERT INTO users (username, address, email, hash_password, phone, role_id) VALUES ('Yee Ling', 'Yishun', 'ling@testing.com', '123example','88833222', 1);
 
 
+https://imgur.com/a/OygNBRQ

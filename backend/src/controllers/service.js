@@ -88,3 +88,34 @@ export const deleteServiceById = async (req, res) => {
     res.status(400).json({ status: "error", msg: "Error deleting service" });
   }
 };
+
+// PATCH /vendor-price-images/:id (只更新image_url)
+export const updateVendorPriceImageUrl = async (req, res) => {
+  const { vendor_price_images_id } = req.params;
+  const { image_url } = req.body;
+
+  try {
+    const result = await pool.query(
+      `
+      UPDATE vendor_price_images
+      SET image_url = COALESCE($1, image_url)
+      WHERE id = $2
+      RETURNING *;
+      `,
+      [image_url, vendor_price_images_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ status: "error", msg: "Vendor price image not found" });
+    }
+
+    res.json({ status: "ok", msg: "Vendor price image URL updated" });
+  } catch (error) {
+    console.error(error.message);
+    res
+      .status(400)
+      .json({ status: "error", msg: "Error updating vendor price image URL" });
+  }
+};

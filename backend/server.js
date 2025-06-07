@@ -11,6 +11,7 @@ import appointmentRoutes from "./src/routers/appointments.js";
 import serviceRoutes from "./src/routers/service.js";
 import usersRoutes from "./src/routers/users.js";
 import statusRoutes from "./src/routers/status.js";
+import vendorRoutes from "./src/routers/vendor.js";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -33,6 +34,7 @@ app.use("/api/users", usersRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/service", serviceRoutes);
 app.use("/api/status", statusRoutes);
+app.use("/api/vendor", vendorRoutes);
 
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
