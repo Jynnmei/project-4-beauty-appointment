@@ -89,6 +89,9 @@ CREATE TABLE vendor_price_images (
     uploaded_at timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
+ALTER TABLE vendor_price_images
+ADD COLUMN vendor_price_images_id INTEGER REFERENCES vendor_price_images(id) ON DELETE CASCADE;
+
 CREATE TABLE appointment_vendor (
   appointment_id INT REFERENCES appointment(appointment_id),
   vendor_id INT REFERENCES users(user_id),
@@ -104,6 +107,3 @@ CREATE TABLE appointment_service (
 INSERT INTO users (username, address, email, hash_password, phone, role_id) VALUES ('JYNN', 'YewTee', 'jynn@testing.com', '123example','88569999', 2);
 
 INSERT INTO users (username, address, email, hash_password, phone, role_id) VALUES ('Yee Ling', 'Yishun', 'ling@testing.com', '123example','88833222', 1);
-
-
-https://imgur.com/a/OygNBRQ

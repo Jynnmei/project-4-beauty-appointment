@@ -5,7 +5,6 @@ import {
   deleteServiceById,
   getAllServices,
   updateService,
-  updateVendorPriceImageUrl,
 } from "../controllers/service.js";
 import {
   validateCreateServiceData,
@@ -41,11 +40,6 @@ router.delete(
   validateIdInParam,
   checkError,
   deleteServiceById
-);
-
-router.patch(
-  "/vendor-price-images/:vendor_price_images_id",
-  updateVendorPriceImageUrl
 );
 
 export default router;
