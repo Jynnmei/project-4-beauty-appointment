@@ -10,7 +10,6 @@ CREATE TABLE users (
   role_id int REFERENCES roles(id)
 );
 
-
 CREATE TABLE roles (
 	id serial PRIMARY KEY,
 	name varchar(20) NOT NULL UNIQUE
@@ -77,6 +76,11 @@ INSERT INTO status (name) VALUES
   ('PENDING'), 
   ('CONFIRMED'),
   ('COMPLETED');
+
+SELECT user_id, username FROM users
+JOIN roles ON users.role_id = roles.id
+WHERE roles.name = 'vendor';
+
 
 SELECT * FROM roles;
 SELECT * FROM types;

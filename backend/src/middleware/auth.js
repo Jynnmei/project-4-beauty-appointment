@@ -10,7 +10,7 @@ export const authClient = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
 
-    if (decoded.role_id !== 1) {
+    if (decoded.role_id !== CLIENT) {
       return res.status(403).json({
         status: "error",
         msg: "Only clients can create appointments",
@@ -34,7 +34,7 @@ export const authVendor = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
 
-    if (decoded.role_id !== 2) {
+    if (decoded.role_id !== VENDOR) {
       return res.status(403).json({
         status: "error",
         msg: "Only vendors are authorized",
