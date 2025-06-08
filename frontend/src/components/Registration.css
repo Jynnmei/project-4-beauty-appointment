@@ -1,0 +1,46 @@
+.registration-container {
+  background-color: rgb(225, 199, 237);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.registration-form {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.register-btn {
+  background-color: rgb(172, 113, 227);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.register-btn:hover {
+  background-color: rgb(107, 38, 176);
+}
+
+.login-btn {
+  background-color: rgb(83, 157, 242);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: rgb(49, 86, 209);
+}

@@ -41,6 +41,16 @@ export const register = async (req, res) => {
   }
 };
 
+export const getRoles = async (req, res) => {
+  try {
+    const result = await pool.query("SELECT id, name FROM roles");
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error.message);
+    res.status(400).json({ message: "Failed to fetch roles" });
+  }
+};
+
 export const login = async (req, res) => {
   const { email = "", hash_password = "" } = req.body;
 
