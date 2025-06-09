@@ -7,6 +7,8 @@ const UserContext = React.createContext({
   setRole: () => {},
   user_id: null,
   setUserId: () => {},
+  username: "",
+  setUsername: () => {},
 });
 
 export default UserContext;

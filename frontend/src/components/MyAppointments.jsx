@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import useFetch from "../hooks/useFetch.jsx";
 import UserContext from "../context/user.jsx";
+import "../components/MyAppointments.css";
 
 const MyAppointments = () => {
   const userCtx = useContext(UserContext);
@@ -38,10 +39,16 @@ const MyAppointments = () => {
 
   return (
     <div className="my-appointments-container">
-      <h2>My Appointments</h2>
+      {userCtx.username && (
+        <h4 className="welcome">Welcome {userCtx.username}</h4>
+      )}
+      <h2 className="myAppointments">My Appointments</h2>
       <ul className="appointment-list">
-        {appointments.map((appt) => (
-          <li key={appt.appointment_id} className="appointment-item">
+        {appointments.map((appt, index) => (
+          <li
+            key={`${appt.appointment_id}-${index}`}
+            className="appointment-item"
+          >
             <p>
               <strong>Facial Type:</strong> {appt.type_name || appt.type_id}
             </p>
@@ -62,7 +69,9 @@ const MyAppointments = () => {
         ))}
       </ul>
 
-      <button onClick={loadAppointments}>Refresh</button>
+      <button className="refreshBtn" onClick={loadAppointments}>
+        Refresh
+      </button>
     </div>
   );
 };

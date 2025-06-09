@@ -109,6 +109,9 @@ const AppointmentForm = () => {
 
   return (
     <div className="appt-container">
+      {userCtx.username && (
+        <h4 className="welcome">Welcome {userCtx.username}</h4>
+      )}
       <h2>Price List</h2>
       <div className="price-list">
         {priceList.length > 0 ? (

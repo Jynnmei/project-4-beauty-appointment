@@ -18,6 +18,7 @@ function App() {
   const [role, setRole] = useState("");
   const [user_id, setUserId] = useState(null);
   const [showLogin, setShowLogin] = useState(true);
+  const [username, setUsername] = useState("");
 
   // accessToken 变化，尝试解码并提取 user_id 和 role
   useEffect(() => {
@@ -47,6 +48,8 @@ function App() {
           setRole,
           user_id,
           setUserId,
+          username,
+          setUsername,
         }}
       >
         <Router>
