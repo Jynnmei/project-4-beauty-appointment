@@ -11,6 +11,7 @@ import Login from "./components/Login.jsx";
 import Registration from "./components/Registration.jsx";
 import AppointmentForm from "./components/AppointmentForm.jsx";
 import NavBar from "./NavBar/NavBar.jsx";
+import MyAppointments from "./components/MyAppointments.jsx";
 
 function App() {
   const [accessToken, setAccessToken] = useState("");
@@ -18,7 +19,7 @@ function App() {
   const [user_id, setUserId] = useState(null);
   const [showLogin, setShowLogin] = useState(true);
 
-  // 每当 accessToken 变化，尝试解码并提取 user_id 和 role
+  // accessToken 变化，尝试解码并提取 user_id 和 role
   useEffect(() => {
     if (accessToken) {
       try {
@@ -63,7 +64,7 @@ function App() {
             {accessToken && (
               <>
                 <Route path="/bookAppointment" element={<AppointmentForm />} />
-                {/* <Route path="/myAppointments" element={<MyAppointments />} /> */}
+                <Route path="/myAppointments" element={<MyAppointments />} />
                 <Route path="*" element={<Navigate to="/bookAppointment" />} />
               </>
             )}

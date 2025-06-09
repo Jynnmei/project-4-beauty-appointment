@@ -141,9 +141,9 @@ const AppointmentForm = () => {
             <label>Vendor</label>
             <select className="form-control" ref={vendorRef}>
               <option value="">Select Vendor</option>
-              {vendors.map((v) => (
-                <option key={v.user_id} value={v.user_id}>
-                  {v.username}
+              {vendors.map((vendor) => (
+                <option key={vendor.user_id} value={vendor.user_id}>
+                  {vendor.username}
                 </option>
               ))}
             </select>
@@ -153,9 +153,9 @@ const AppointmentForm = () => {
             <label>Service</label>
             <select className="form-control" ref={serviceRef}>
               <option value="">Select Service</option>
-              {services.map((s) => (
-                <option key={s.catalog_id} value={s.catalog_id}>
-                  {s.title}
+              {services.map((service) => (
+                <option key={service.catalog_id} value={service.catalog_id}>
+                  {service.title}
                 </option>
               ))}
             </select>
