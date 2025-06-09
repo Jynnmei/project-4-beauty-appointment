@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import UserContext from "./context/user.jsx";
 import Login from "./components/Login.jsx";
 import Registration from "./components/Registration.jsx";
 import AppointmentForm from "./components/AppointmentForm.jsx";
+import NavBar from "./NavBar/NavBar.jsx";
 
 function App() {
   const [accessToken, setAccessToken] = useState("");
@@ -41,13 +48,34 @@ function App() {
           setUserId,
         }}
       >
-        {accessToken.length > 0 && <AppointmentForm />}
+        <Router>
+          {accessToken && <NavBar />}
+          <Routes>
+            {!accessToken && showLogin && (
+              <Route path="*" element={<Login setShowLogin={setShowLogin} />} />
+            )}
+            {!accessToken && !showLogin && (
+              <Route
+                path="*"
+                element={<Registration setShowLogin={setShowLogin} />}
+              />
+            )}
+            {accessToken && (
+              <>
+                <Route path="/bookAppointment" element={<AppointmentForm />} />
+                {/* <Route path="/myAppointments" element={<MyAppointments />} /> */}
+                <Route path="*" element={<Navigate to="/bookAppointment" />} />
+              </>
+            )}
+          </Routes>
+        </Router>
+        {/* {accessToken.length > 0 && <AppointmentForm />}
         {accessToken.length === 0 && showLogin && (
           <Login setShowLogin={setShowLogin} />
         )}
         {accessToken.length === 0 && !showLogin && (
           <Registration setShowLogin={setShowLogin} />
-        )}
+        )} */}
       </UserContext.Provider>
     </>
   );

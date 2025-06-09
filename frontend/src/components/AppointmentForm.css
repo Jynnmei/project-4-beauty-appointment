@@ -4,9 +4,9 @@
 }
 
 .appt-container h2 {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   font-weight: 600;
-  font-size: 1.8rem;
+  font-size: 35px;
   color: #2c3e50;
   margin-bottom: 6px;
   margin-left: 10px;
@@ -45,4 +45,19 @@ button,
   object-fit: contain;
   border: 1px solid #353535;
   border-radius: 4px;
+}
+
+button:hover {
+  background-color: rgb(21, 133, 126);
+}
+
+button {
+  background-color: rgb(175, 244, 91);
+  color: rgb(15, 2, 32);
+  border: none;
+  padding: 0.5rem;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
