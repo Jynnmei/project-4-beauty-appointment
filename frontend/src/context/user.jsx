@@ -1,3 +1,12 @@
 import React from "react";
 
-export default React.createContext();
+const UserContext = React.createContext({
+  accessToken: "",
+  setAccessToken: () => {},
+  role: "",
+  setRole: () => {},
+  user_id: null,
+  setUserId: () => {},
+});
+
+export default UserContext;

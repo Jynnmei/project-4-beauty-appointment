@@ -19,7 +19,10 @@ const Login = (props) => {
     if (res.ok) {
       userCtx.setAccessToken(res.data.access);
       const decoded = jwtDecode(res.data.access);
-      userCtx.setRole(decoded.role);
+      console.log("Decoded JWT payload:", decoded);
+      userCtx.setRole(decoded.role_id);
+
+      props.setShowLogin(false);
     } else {
       console.log(res.data);
       alert(JSON.stringify(res.data));

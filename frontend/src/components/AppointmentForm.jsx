@@ -43,19 +43,22 @@ const AppointmentForm = () => {
       undefined,
       userCtx.accessToken
     );
+    console.log("serviceRes:", serviceRes);
     if (serviceRes.ok) setServices(serviceRes.data);
   };
 
   const createAppoitment = async () => {
+    const client_id = userCtx.user_id;
     const datetime = `${dateRef.current.value}T${timeRef.current.value}`;
 
     const res = await fetchData(
       "/api/appointment",
       "PUT",
       {
-        type_id: typeRef.current.value,
-        vendor_id: vendorRef.current.value,
-        service_id: serviceRef.current.value,
+        client_id,
+        type_id: parseInt(typeRef.current.value, 10),
+        vendor_id: parseInt(vendorRef.current.value, 10),
+        service_id: parseInt(serviceRef.current.value, 10),
         appointment_datetime: datetime,
         status: "pending",
       },
@@ -63,7 +66,7 @@ const AppointmentForm = () => {
     );
 
     if (res.ok) {
-      createAppoitment();
+      alert("Appointment created successfully!");
     } else {
       alert(JSON.stringify(res.data));
       console.log(res.data);
@@ -82,7 +85,7 @@ const AppointmentForm = () => {
       <div className="row">
         <h1 className="col-md-6">Appointment Form</h1>
       </div>
-      {userCtx.role === "CLIENT" && (
+      {userCtx.role === 1 && (
         <div>
           <div className="mb-3">
             <label>Facial Type</label>
@@ -113,8 +116,8 @@ const AppointmentForm = () => {
             <select className="form-control" ref={serviceRef}>
               <option value="">Select Service</option>
               {services.map((s) => (
-                <option key={s.service_id} value={s.service_id}>
-                  {s.name}
+                <option key={s.catalog_id} value={s.catalog_id}>
+                  {s.title}
                 </option>
               ))}
             </select>
