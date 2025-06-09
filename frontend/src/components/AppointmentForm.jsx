@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, use } from "react";
 import useFetch from "../hooks/useFetch.jsx";
 import UserContext from "../context/user.jsx";
+import "../components/AppointmentForm.css";
 
 const AppointmentForm = () => {
   const userCtx = use(UserContext);
@@ -17,9 +18,26 @@ const AppointmentForm = () => {
   const [types, setTypes] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [services, setServices] = useState([]);
+  const [priceList, setPriceList] = useState([]);
 
   const loadDropdownData = async () => {
     console.log("Loading data with token:", userCtx.accessToken);
+
+    const priceRes = await fetchData(
+      "/api/img/1",
+      "GET",
+      undefined,
+      userCtx.accessToken
+    );
+    console.log("Price response:", priceRes);
+
+    const images = priceRes.data?.data || [];
+    if (priceRes.ok && images.length > 0) {
+      setPriceList(images.map((item) => item.image_url));
+    } else {
+      console.error("Price list loading failed or empty");
+    }
+
     const typeRes = await fetchData(
       "/api/client/types",
       "GET",
@@ -47,6 +65,14 @@ const AppointmentForm = () => {
     if (serviceRes.ok) setServices(serviceRes.data);
   };
 
+  const clearForm = () => {
+    if (typeRef.current) typeRef.current.value = "";
+    if (vendorRef.current) vendorRef.current.value = "";
+    if (serviceRef.current) serviceRef.current.value = "";
+    if (dateRef.current) dateRef.current.value = "";
+    if (timeRef.current) timeRef.current.value = "";
+  };
+
   const createAppoitment = async () => {
     const client_id = userCtx.user_id;
     const datetime = `${dateRef.current.value}T${timeRef.current.value}`;
@@ -67,6 +93,7 @@ const AppointmentForm = () => {
 
     if (res.ok) {
       alert("Appointment created successfully!");
+      clearForm();
     } else {
       alert(JSON.stringify(res.data));
       console.log(res.data);
@@ -81,9 +108,20 @@ const AppointmentForm = () => {
   }, [userCtx.accessToken]);
 
   return (
-    <div className="container">
+    <div className="appt-container">
+      <h2>Price List</h2>
+      <div className="price-list">
+        {priceList.length > 0 ? (
+          priceList.map((url, idx) => (
+            <img key={idx} src={url} alt={`Price List ${idx + 1}`} />
+          ))
+        ) : (
+          <p>Loading Price List...</p>
+        )}
+      </div>
+
       <div className="row">
-        <h1 className="col-md-6">Appointment Form</h1>
+        <h2 className="col-md-6">Appointment Form</h2>
       </div>
       {userCtx.role === 1 && (
         <div>
