@@ -1,5 +1,8 @@
 import jwt from "jsonwebtoken";
 
+const CLIENT = 1;
+const VENDOR = 2;
+
 export const authClient = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   if (!authHeader) {
@@ -9,6 +12,9 @@ export const authClient = (req, res, next) => {
   const token = authHeader.replace("Bearer ", "");
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
+
+    console.log("decoded.role_id:", decoded.role_id);
+    console.log("CLIENT:", CLIENT);
 
     if (decoded.role_id !== CLIENT) {
       return res.status(403).json({

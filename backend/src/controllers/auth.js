@@ -70,15 +70,10 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
-    const roleMap = {
-      1: "CLIENT",
-      2: "VENDOR",
-    };
-
     const claims = {
       user_id: user.user_id,
       username: user.username,
-      role_id: roleMap[user.role_id],
+      role_id: user.role_id,
     };
 
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
@@ -108,15 +103,10 @@ export const refresh = async (req, res) => {
 
     const decoded = jwt.verify(refresh, process.env.REFRESH_SECRET);
 
-    const roleMap = {
-      1: "CLIENT",
-      2: "VENDOR",
-    };
-
     const claims = {
       user_id: decoded.user_id,
       username: decoded.username,
-      role_id: roleMap[decoded.role_id],
+      role_id: decoded.role_id,
     };
 
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
