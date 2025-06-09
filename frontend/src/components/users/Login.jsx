@@ -1,8 +1,8 @@
 import React, { useState, use } from "react";
-import UserContext from "../context/user.jsx";
-import useFetch from "../hooks/useFetch.jsx";
+import UserContext from "../../context/user.jsx";
+import useFetch from "../../hooks/useFetch.jsx";
 import { jwtDecode } from "jwt-decode";
-import "../components/Login.css";
+import "../users/Login.css";
 
 const Login = (props) => {
   const userCtx = use(UserContext);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
-import useFetch from "../hooks/useFetch.jsx";
-import UserContext from "../context/user.jsx";
-import "../components/MyAppointments.css";
+import useFetch from "../../hooks/useFetch.jsx";
+import UserContext from "../../context/user.jsx";
+import "../client/MyAppointments.css";
 
 const MyAppointments = () => {
   const userCtx = useContext(UserContext);

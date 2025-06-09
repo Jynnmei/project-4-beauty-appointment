@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, use } from "react";
-import useFetch from "../hooks/useFetch.jsx";
-import UserContext from "../context/user.jsx";
-import "../components/AppointmentForm.css";
+import useFetch from "../../hooks/useFetch.jsx";
+import UserContext from "../../context/user.jsx";
+import "../client/AppointmentForm.css";
 
 const AppointmentForm = () => {
   const userCtx = use(UserContext);
@@ -19,6 +19,13 @@ const AppointmentForm = () => {
   const [vendors, setVendors] = useState([]);
   const [services, setServices] = useState([]);
   const [priceList, setPriceList] = useState([]);
+
+  useEffect(() => {
+    if (userCtx.role !== 1) {
+      alert("Access denied. Clients only.");
+      navigate("/bookAppointment");
+    }
+  }, [userCtx]);
 
   const loadDropdownData = async () => {
     console.log("Loading data with token:", userCtx.accessToken);
@@ -122,63 +129,60 @@ const AppointmentForm = () => {
           <p>Loading Price List...</p>
         )}
       </div>
-
       <div className="row">
         <h2 className="col-md-6">Appointment Form</h2>
       </div>
-      {userCtx.role === 1 && (
-        <div>
-          <div className="mb-3">
-            <label>Facial Type</label>
-            <select className="form-control" ref={typeRef}>
-              <option value="">Select Facial Type</option>
-              {types.map((type) => (
-                <option key={type.id} value={type.id}>
-                  {type.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-3">
-            <label>Vendor</label>
-            <select className="form-control" ref={vendorRef}>
-              <option value="">Select Vendor</option>
-              {vendors.map((vendor) => (
-                <option key={vendor.user_id} value={vendor.user_id}>
-                  {vendor.username}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-3">
-            <label>Service</label>
-            <select className="form-control" ref={serviceRef}>
-              <option value="">Select Service</option>
-              {services.map((service) => (
-                <option key={service.catalog_id} value={service.catalog_id}>
-                  {service.title}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-3">
-            <label>Date</label>
-            <input type="date" className="form-control" ref={dateRef} />
-          </div>
-
-          <div className="mb-3">
-            <label>Time</label>
-            <input type="time" className="form-control" ref={timeRef} />
-          </div>
-
-          <button className="col-md-3" onClick={createAppoitment}>
-            Book
-          </button>
+      <div>
+        <div className="mb-3">
+          <label>Facial Type</label>
+          <select className="form-control" ref={typeRef}>
+            <option value="">Select Facial Type</option>
+            {types.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.name}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
+
+        <div className="mb-3">
+          <label>Vendor</label>
+          <select className="form-control" ref={vendorRef}>
+            <option value="">Select Vendor</option>
+            {vendors.map((vendor) => (
+              <option key={vendor.user_id} value={vendor.user_id}>
+                {vendor.username}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label>Service</label>
+          <select className="form-control" ref={serviceRef}>
+            <option value="">Select Service</option>
+            {services.map((service) => (
+              <option key={service.catalog_id} value={service.catalog_id}>
+                {service.title}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label>Date</label>
+          <input type="date" className="form-control" ref={dateRef} />
+        </div>
+
+        <div className="mb-3">
+          <label>Time</label>
+          <input type="time" className="form-control" ref={timeRef} />
+        </div>
+
+        <button className="col-md-3" onClick={createAppoitment}>
+          Book
+        </button>
+      </div>
     </div>
   );
 };

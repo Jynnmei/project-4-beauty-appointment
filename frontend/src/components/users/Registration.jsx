@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import useFetch from "../hooks/useFetch";
-import "../components/Registration.css";
+import useFetch from "../../hooks/useFetch";
+import "../users/Registration.css";
 
 const Registration = (props) => {
   const fetchData = useFetch();
