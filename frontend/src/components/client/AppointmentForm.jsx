@@ -31,7 +31,7 @@ const AppointmentForm = () => {
     console.log("Loading data with token:", userCtx.accessToken);
 
     const priceRes = await fetchData(
-      "/api/img/1",
+      "/api/img/8",
       "GET",
       undefined,
       userCtx.accessToken

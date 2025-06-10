@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import useFetch from "../../hooks/useFetch.jsx";
 import UserContext from "../../context/user.jsx";
 import "../client/MyAppointments.css";
+import AppointmentEdit from "./AppointmentEdit.jsx";
 
 const MyAppointments = () => {
   const userCtx = useContext(UserContext);
@@ -9,6 +10,21 @@ const MyAppointments = () => {
 
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [vendorOptions, setVendorOptions] = useState([]);
+  const [serviceOptions, setServiceOptions] = useState([]);
+
+  const loadOptions = async () => {
+    const [typesRes, vendorsRes, servicesRes] = await Promise.all([
+      fetchData("/api/client/types", "GET", undefined, userCtx.accessToken),
+      fetchData("/api/client", "GET", undefined, userCtx.accessToken),
+      fetchData("/api/client/service", "GET", undefined, userCtx.accessToken),
+    ]);
+
+    if (typesRes.ok) setTypeOptions(typesRes.data);
+    if (vendorsRes.ok) setVendorOptions(vendorsRes.data);
+    if (servicesRes.ok) setServiceOptions(servicesRes.data);
+  };
 
   const loadAppointments = async () => {
     if (!userCtx.user_id || !userCtx.accessToken) return;
@@ -22,6 +38,7 @@ const MyAppointments = () => {
     );
 
     if (res.ok) {
+      console.log("Appointment data:", res.data);
       setAppointments(res.data || []);
     } else {
       console.error("Failed to load appointments", res.data);
@@ -29,8 +46,41 @@ const MyAppointments = () => {
     setLoading(false);
   };
 
+  const handleUpdate = async (updated) => {
+    const res = await fetchData(
+      `/api/appointment/${updated.appointment_id}`,
+      "PATCH",
+      {
+        type_id: updated.type_id,
+        vendor_id: updated.vendor_id,
+        service_id: updated.service_id,
+        appointment_datetime: updated.appointment_datetime,
+      },
+      userCtx.accessToken
+    );
+    if (res.ok) loadAppointments();
+    else alert("Failed to update.");
+  };
+
+  const handleDelete = async (appointment_id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this appointment?"
+    );
+    if (!confirmDelete) return;
+
+    const res = await fetchData(
+      `/api/appointment/${appointment_id}`,
+      "DELETE",
+      undefined,
+      userCtx.accessToken
+    );
+    if (res.ok) loadAppointments();
+    else alert("Failed to delete.");
+  };
+
   useEffect(() => {
     loadAppointments();
+    loadOptions();
   }, [userCtx.user_id, userCtx.accessToken]);
 
   if (loading) return <p>Loading your appointments...</p>;
@@ -43,29 +93,18 @@ const MyAppointments = () => {
         <h4 className="welcome">Welcome {userCtx.username}</h4>
       )}
       <h2 className="myAppointments">My Appointments</h2>
+
       <ul className="appointment-list">
-        {appointments.map((appt, index) => (
-          <li
-            key={`${appt.appointment_id}-${index}`}
-            className="appointment-item"
-          >
-            <p>
-              <strong>Facial Type:</strong> {appt.type_name || appt.type_id}
-            </p>
-            <p>
-              <strong>Vendor:</strong> {appt.vendor_name || appt.vendor_id}
-            </p>
-            <p>
-              <strong>Service:</strong> {appt.service_title || appt.service_id}
-            </p>
-            <p>
-              <strong>Date & Time:</strong>{" "}
-              {new Date(appt.appointment_datetime).toLocaleString()}
-            </p>
-            <p>
-              <strong>Status:</strong> {appt.status}
-            </p>
-          </li>
+        {appointments.map((appt) => (
+          <AppointmentEdit
+            key={appt.appointment_id}
+            appt={appt}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
+            typeOptions={typeOptions}
+            vendorOptions={vendorOptions}
+            serviceOptions={serviceOptions}
+          />
         ))}
       </ul>
 
