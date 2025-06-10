@@ -77,10 +77,6 @@ INSERT INTO status (name) VALUES
   ('CONFIRMED'),
   ('COMPLETED');
 
-SELECT user_id, username FROM users
-JOIN roles ON users.role_id = roles.id
-WHERE roles.name = 'vendor';
-
 
 SELECT * FROM roles;
 SELECT * FROM types;
@@ -108,6 +104,3 @@ CREATE TABLE appointment_service (
   PRIMARY KEY (appointment_id, service_id)
 );
 
-INSERT INTO users (username, address, email, hash_password, phone, role_id) VALUES ('JYNN', 'YewTee', 'jynn@testing.com', '123example','88569999', 2);
-
-INSERT INTO users (username, address, email, hash_password, phone, role_id) VALUES ('Yee Ling', 'Yishun', 'ling@testing.com', '123example','88833222', 1);

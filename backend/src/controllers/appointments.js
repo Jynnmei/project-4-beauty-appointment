@@ -77,15 +77,14 @@ export const updateAppointment = async (req, res) => {
       `;
     const result = await client.query(updateMainQuery, [
       client_id,
-      type_id,
-      vendor_id,
-      service_id,
-      appointment_datetime,
+      type_id !== undefined ? type_id : null,
+      vendor_id !== undefined ? vendor_id : null,
+      service_id !== undefined ? service_id : null,
+      appointment_datetime !== undefined ? appointment_datetime : null,
       appointment_id,
     ]);
 
     if (result.rows.length === 0) {
-      await client.query("ROLLBACK");
       return res
         .status(404)
         .json({ status: "error", msg: "Appointment not found" });
@@ -170,11 +169,28 @@ export const getAllAppointment = async (req, res) => {
 export const deleteAppointmentById = async (req, res) => {
   const { appointment_id } = req.params;
 
+  const client = await pool.connect();
+
   try {
-    const result = await pool.query(
+    await client.query("BEGIN");
+
+    // delete FK
+    await client.query(
+      `DELETE FROM appointment_service WHERE appointment_id = $1`,
+      [appointment_id]
+    );
+    await client.query(
+      `DELETE FROM appointment_vendor WHERE appointment_id = $1`,
+      [appointment_id]
+    );
+
+    // delete PK
+    const result = await client.query(
       `DELETE FROM appointment WHERE appointment_id = $1 RETURNING *`,
       [appointment_id]
     );
+
+    await client.query("COMMIT");
 
     if (result.rows.length === 0) {
       return res
@@ -184,9 +200,12 @@ export const deleteAppointmentById = async (req, res) => {
 
     res.json({ status: "ok", msg: "Appointment deleted" });
   } catch (error) {
+    await client.query("ROLLBACK");
     console.error(error.message);
     res
       .status(400)
       .json({ status: "error", msg: "Error deleting appointment" });
+  } finally {
+    client.release();
   }
 };

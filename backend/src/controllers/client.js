@@ -47,24 +47,28 @@ export const getAppoinment = async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT 
-         a.appointment_id, a.appointment_datetime, st.name AS status, 
+         a.appointment_id, 
+         a.appointment_datetime, 
+         st.name AS status, 
          t.name AS type_name,
-         v.username AS vendor_name,
-         c.title AS service_title
+         json_agg(DISTINCT v.username) AS vendors,
+         json_agg(DISTINCT c.title) AS services
        FROM appointment a
        LEFT JOIN status st ON a.status_id = st.id
        LEFT JOIN types t ON a.type_id = t.id
-       LEFT JOIN users v ON a.vendor_id = v.user_id 
-       LEFT JOIN service s ON a.service_id = s.catalog_id
+       LEFT JOIN appointment_vendor av ON a.appointment_id = av.appointment_id
+       LEFT JOIN users v ON av.vendor_id = v.user_id
+       LEFT JOIN appointment_service aps ON a.appointment_id = aps.appointment_id
+       LEFT JOIN service s ON aps.service_id = s.catalog_id
        LEFT JOIN service_catalog c ON s.catalog_id = c.catalog_id 
        WHERE a.client_id = $1
+       GROUP BY a.appointment_id, a.appointment_datetime, st.name, t.name
        ORDER BY a.appointment_datetime DESC`,
       [client_id]
     );
     res.json(result.rows);
   } catch (error) {
-    console.error("SQL Error:", error);
-    // console.error(error.message);
+    console.error(error.message);
     res
       .status(400)
       .json({ status: "error", msg: "Failed to get appointments" });
