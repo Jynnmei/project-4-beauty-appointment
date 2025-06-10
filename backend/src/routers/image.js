@@ -13,12 +13,8 @@ router.get("/:vendor_id", getAllImages);
 
 router.put("/:vendor_id", multer.array("images", 10), createMultipleImages);
 
-router.patch(
-  "/:vendor_price_images_id",
-  multer.single("images"),
-  updateVendorPriceImage
-);
+router.patch("/:id", multer.single("images"), updateVendorPriceImage);
 
-router.delete("/:vendor_price_images_id", deleteVendorPriceImage);
+router.delete("/:id", deleteVendorPriceImage);
 
 export default router;

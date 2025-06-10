@@ -1,23 +1,10 @@
 import { pool } from "../db/db.js";
 
-// GET
+// GET - catalog
 export const getAllServices = async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM service");
-    res.json(result.rows);
-  } catch (error) {
-    console.error(error.message);
-    res.status(400).json({ status: "error", msg: "Failed to get services" });
-  }
-};
-
-// GET by ID
-export const getServicesById = async (req, res) => {
-  const { service_id } = req.params;
-  try {
     const result = await pool.query(
-      "SELECT * FROM service WHERE service_id = $1",
-      [service_id]
+      "SELECT * FROM service_catalog ORDER BY catalog_id"
     );
     res.json(result.rows);
   } catch (error) {
@@ -26,15 +13,17 @@ export const getServicesById = async (req, res) => {
   }
 };
 
-// PUT
+// PUT - catalog
 export const createService = async (req, res) => {
-  const { vendor_id, catalog_id } = req.body;
+  const { title, description, price, duration } = req.body;
 
   try {
     const query = `
-      INSERT INTO service (vendor_id, catalog_id) VALUES ($1, $2) RETURNING *;
-      `;
-    const values = [vendor_id, catalog_id];
+      INSERT INTO service_catalog (title, description, price, duration)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *;
+    `;
+    const values = [title, description, price, duration];
     const result = await pool.query(query, values);
 
     res.json({ status: "ok", msg: "Service added" });
@@ -46,15 +35,22 @@ export const createService = async (req, res) => {
 
 // PATCH - catalog
 export const updateService = async (req, res) => {
-  const { service_id } = req.params;
-  const { vendor_id, catalog_id } = req.body;
+  const { catalog_id } = req.params;
+  const { title, description, price, duration } = req.body;
 
   try {
     const result = await pool.query(
       `
-      UPDATE service SET vendor_id = $1, catalog_id = $2 WHERE service_id = $3 RETURNING *;
+      UPDATE service_catalog
+      SET
+        title = COALESCE($1, title),
+        description = COALESCE($2, description),
+        price = COALESCE($3, price),
+        duration = COALESCE($4, duration)
+      WHERE catalog_id = $5
+      RETURNING *;
     `,
-      [vendor_id, catalog_id, service_id]
+      [title, description, price, duration, catalog_id]
     );
 
     if (result.rows.length === 0) {
@@ -72,12 +68,12 @@ export const updateService = async (req, res) => {
 
 // DELETE - catalog
 export const deleteServiceById = async (req, res) => {
-  const { service_id } = req.params;
+  const { catalog_id } = req.params;
 
   try {
     const result = await pool.query(
-      `DELETE FROM service WHERE service_id = $1 RETURNING *`,
-      [service_id]
+      `DELETE FROM service_catalog WHERE catalog_id = $1 RETURNING *`,
+      [catalog_id]
     );
 
     if (result.rows.length === 0) {

@@ -5,31 +5,29 @@ import {
   deleteServiceById,
   getAllServices,
   updateService,
-} from "../controllers/service.js";
+} from "../controllers/catalog.js";
 import {
   validateCreateServiceData,
   validateIdInParam,
   validateUpdateServiceData,
-} from "../validators/service.js";
-import { authClient } from "../middleware/auth.js";
+} from "../validators/catalog.js";
+import { authVendor } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/", authClient, checkError, getAllServices);
-
-router.get("/:service_id", authClient, checkError, getAllServices);
+router.get("/", checkError, getAllServices);
 
 router.put(
   "/",
-  authClient,
+  authVendor,
   validateCreateServiceData,
   checkError,
   createService
 );
 
 router.patch(
-  "/:service_id",
-  authClient,
+  "/:catalog_id",
+  authVendor,
   validateIdInParam,
   validateUpdateServiceData,
   checkError,
@@ -37,8 +35,8 @@ router.patch(
 );
 
 router.delete(
-  "/:service_id",
-  authClient,
+  "/:catalog_id",
+  authVendor,
   validateIdInParam,
   checkError,
   deleteServiceById
