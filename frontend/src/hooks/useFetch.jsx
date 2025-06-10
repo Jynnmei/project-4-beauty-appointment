@@ -1,14 +1,24 @@
 const useFetch = () => {
-  const fetchData = async (endpoint, method, body, token) => {
-    const headers = {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: "Bearer " + token }),
-    };
+  const fetchData = async (
+    endpoint,
+    method,
+    body,
+    token,
+    isFormData = false
+  ) => {
+    const headers = {};
 
+    if (!isFormData) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    if (token) {
+      headers["Authorization"] = "Bearer " + token;
+    }
     const res = await fetch(import.meta.env.VITE_SERVER + endpoint, {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
     });
     const data = await res.json();
 
