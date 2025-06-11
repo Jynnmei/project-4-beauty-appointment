@@ -3,6 +3,7 @@ import useFetch from "../../hooks/useFetch.jsx";
 import UserContext from "../../context/user.jsx";
 import ServiceCatalogModal from "./ServiceCatalogModal.jsx";
 import ServiceCreateModal from "./ServiceCreateModal.jsx";
+import "../vendor/ServiceCatalog.css";
 
 const ServiceCatalog = () => {
   const userCtx = use(UserContext);
@@ -73,33 +74,47 @@ const ServiceCatalog = () => {
       {isLoading ? (
         <p>Loading services...</p>
       ) : (
-        <ul>
+        <div className="service-grid">
           {services.map((service) => (
-            <li key={service.id}>
-              <p>Service: {service.title}</p>
-              <p>Description: {service.description}</p>
-              <p>Price: ${service.price}</p>
-              <p>Duration: {service.duration} mins</p>
-
-              <button
-                onClick={() => {
-                  setSelectedService(service);
-                  setModalMode("edit");
-                  setShowModal(true);
-                }}
-              >
-                Edit
-              </button>
-
-              <button onClick={() => deleteService(service.catalog_id)}>
-                Delete
-              </button>
-            </li>
+            <div className="service-card" key={service.id}>
+              <div className="service-title">
+                <strong>Facial Type: </strong>
+                {service.title}
+              </div>
+              <div className="service-description">
+                <strong>Description: </strong>
+                {service.description}
+              </div>
+              <div className="service-details">
+                <strong>Price: </strong> ${service.price}
+                <br />
+                <strong>Duration: </strong> {service.duration} mins
+              </div>
+              <div className="service-actions">
+                <button
+                  className="edit-btn"
+                  onClick={() => {
+                    setSelectedService(service);
+                    setModalMode("edit");
+                    setShowModal(true);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteService(service.catalog_id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
 
       <button
+        className="addNewServiceBtn"
         onClick={() => {
           setModalMode("create");
           setSelectedService(null);

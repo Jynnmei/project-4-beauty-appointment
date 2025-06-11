@@ -18,3 +18,43 @@
   z-index: 100;
   overflow: hidden;
 }
+
+.modal h3 {
+  margin-top: 25px;
+  margin-left: 15px;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+.input {
+  min-width: 800px;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.btnCreate,
+.btnCancel,
+.btnUpdate {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btnCreate:hover {
+  background-color: #0056b3;
+}
+
+.btnCancel {
+  background-color: #6c757d;
+}
+.btnCancel:hover {
+  background-color: #5a6268;
+}

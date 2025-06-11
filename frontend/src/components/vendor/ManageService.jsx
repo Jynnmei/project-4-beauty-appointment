@@ -132,20 +132,23 @@ const ManageService = () => {
           {images.map((img) => (
             <div key={img.id} className="img-block">
               <img src={img.image_url} alt="vendor-image" className="img" />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  handleUpdate(e, img.id);
-                  e.target.value = "";
-                }}
-              />
-              <button
-                onClick={() => handleDelete(img.id)}
-                className="delete-btn"
-              >
-                Delete
-              </button>
+
+              <div className="img-actions">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    handleUpdate(e, img.id);
+                    e.target.value = "";
+                  }}
+                />
+                <button
+                  onClick={() => handleDelete(img.id)}
+                  className="delete-btn"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>

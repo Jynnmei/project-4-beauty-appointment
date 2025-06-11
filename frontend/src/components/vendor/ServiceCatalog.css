@@ -1,0 +1,61 @@
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.service-card {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 16px;
+  background-color: #c8f3f2;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.service-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.service-description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 10px;
+  white-space: pre-line;
+}
+
+.service-details {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 16px;
+}
+
+.service-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn {
+  display: flex;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  margin-top: 5px;
+  margin-left: -8px;
+  background-color: rgb(107, 179, 243);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background-color: rgb(68, 38, 202);
+}
+
+.addNewServiceBtn {
+  margin-top: 15px;
+  margin-left: 2px;
+  background-color: rgb(38, 148, 244);
+}

@@ -49,7 +49,7 @@ const OverLay = (props) => {
             ref={titleRef}
             defaultValue={props.title}
             type="text"
-            className="form-control"
+            className={`form-control ${styles["input"]}`}
           />
         </div>
         <div className="form-group">
@@ -58,7 +58,7 @@ const OverLay = (props) => {
             ref={descriptionRef}
             defaultValue={props.description}
             type="text"
-            className="form-control"
+            className={`form-control ${styles["input"]}`}
           />
         </div>
         <div className="form-group">
@@ -67,7 +67,7 @@ const OverLay = (props) => {
             ref={priceRef}
             defaultValue={props.price}
             type="number"
-            className="form-control"
+            className={`form-control ${styles["input"]}`}
           />
         </div>
         <div className="form-group">
@@ -76,12 +76,19 @@ const OverLay = (props) => {
             ref={durationRef}
             defaultValue={props.duration}
             type="number"
-            className="form-control"
+            className={`form-control ${styles["input"]}`}
           />
         </div>
-        <div className="modal-actions">
-          <button onClick={handleCreate}>Create</button>
-          <button onClick={() => props.setShowModal(false)}>Cancel</button>
+        <div className="modal-action">
+          <button className={styles.btnCreate} onClick={handleCreate}>
+            Create
+          </button>
+          <button
+            className={styles.btnCancel}
+            onClick={() => props.setShowModal(false)}
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>
