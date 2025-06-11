@@ -19,6 +19,7 @@ const AppointmentForm = () => {
   const [vendors, setVendors] = useState([]);
   const [services, setServices] = useState([]);
   const [priceList, setPriceList] = useState([]);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     if (userCtx.role !== 1) {
@@ -27,7 +28,13 @@ const AppointmentForm = () => {
     }
   }, [userCtx]);
 
-  const loadDropdownData = async () => {
+  // Date range: today to 3 months later
+  const todayStr = new Date().toISOString().split("T")[0];
+  const threeMonthsLater = new Date();
+  threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3);
+  const maxDateStr = threeMonthsLater.toISOString().split("T")[0];
+
+  const loadImageData = async () => {
     console.log("Loading data with token:", userCtx.accessToken);
 
     const priceRes = await fetchData(
@@ -63,7 +70,7 @@ const AppointmentForm = () => {
     if (vendorRes.ok) setVendors(vendorRes.data);
 
     const serviceRes = await fetchData(
-      "/api/client/service",
+      "/api/catalog",
       "GET",
       undefined,
       userCtx.accessToken
@@ -73,44 +80,77 @@ const AppointmentForm = () => {
   };
 
   const clearForm = () => {
-    if (typeRef.current) typeRef.current.value = "";
-    if (vendorRef.current) vendorRef.current.value = "";
-    if (serviceRef.current) serviceRef.current.value = "";
+    for (let ref of [typeRef, vendorRef, serviceRef]) {
+      if (ref.current) {
+        for (let opt of ref.current.options) {
+          opt.selected = false;
+        }
+      }
+    }
     if (dateRef.current) dateRef.current.value = "";
     if (timeRef.current) timeRef.current.value = "";
   };
 
-  const createAppoitment = async () => {
-    const client_id = userCtx.user_id;
-    const datetime = `${dateRef.current.value}T${timeRef.current.value}`;
+  const getSelectedValues = (ref) =>
+    Array.from(ref.current.selectedOptions).map((opt) => parseInt(opt.value));
 
-    const res = await fetchData(
+  const createAppointment = async () => {
+    const type_ids = getSelectedValues(typeRef);
+    const vendor_ids = getSelectedValues(vendorRef);
+    const service_ids = getSelectedValues(serviceRef);
+    const date = dateRef.current.value;
+    const time = timeRef.current.value;
+
+    if (
+      !date ||
+      !time ||
+      type_ids.length === 0 ||
+      vendor_ids.length === 0 ||
+      service_ids.length === 0
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    const datetime = `${date} ${time}`;
+    const client_id = userCtx.user_id;
+
+    const payload = {
+      client_id,
+      appointment_datetime: datetime,
+      type_ids,
+      vendor_ids,
+      service_ids,
+    };
+
+    console.log("Sending appointment:", payload);
+
+    const appointmentRes = await fetchData(
       "/api/appointment",
       "PUT",
-      {
-        client_id,
-        type_id: parseInt(typeRef.current.value, 10),
-        vendor_id: parseInt(vendorRef.current.value, 10),
-        service_id: parseInt(serviceRef.current.value, 10),
-        appointment_datetime: datetime,
-        status: "pending",
-      },
+      payload,
       userCtx.accessToken
     );
 
-    if (res.ok) {
+    if (appointmentRes.ok) {
       alert("Appointment created successfully!");
       clearForm();
     } else {
-      alert(JSON.stringify(res.data));
-      console.log(res.data);
+      const msg =
+        appointmentRes.data?.msg ||
+        "Failed to create appointment. You can only book 2 appointments per month";
+      setErrorMsg(msg);
+
+      if (msg === "You can only book 2 appointments per month") {
+        alert(msg);
+      }
     }
   };
 
   useEffect(() => {
     if (userCtx.accessToken) {
       console.log("Current access token:", userCtx.accessToken);
-      loadDropdownData();
+      loadImageData();
     }
   }, [userCtx.accessToken]);
 
@@ -171,7 +211,13 @@ const AppointmentForm = () => {
 
         <div className="mb-3">
           <label>Date</label>
-          <input type="date" className="form-control" ref={dateRef} />
+          <input
+            type="date"
+            className="form-control"
+            ref={dateRef}
+            min={todayStr}
+            max={maxDateStr}
+          />
         </div>
 
         <div className="mb-3">
@@ -179,7 +225,9 @@ const AppointmentForm = () => {
           <input type="time" className="form-control" ref={timeRef} />
         </div>
 
-        <button className="col-md-3" onClick={createAppoitment}>
+        {errorMsg && <p className="text-danger">{errorMsg}</p>}
+
+        <button className="col-md-3" onClick={createAppointment}>
           Book
         </button>
       </div>

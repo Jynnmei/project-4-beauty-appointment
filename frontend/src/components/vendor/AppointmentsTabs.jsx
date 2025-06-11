@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import AppointmentCard from "./AppointmentsCard.jsx";
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
@@ -18,11 +17,7 @@ const CustomTabPanel = ({ children, value, index, ...other }) => {
       aria-labelledby={`tab-${index}`} // 指向对应的 <Tab> 的 id
       {...other} // 允许额外的 props 传入
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 };
@@ -152,7 +147,7 @@ const Appointments = () => {
       <CustomTabPanel value={value} index={0}>
         {appointments.PENDING.map((appt) => (
           <AppointmentCard
-            key={appt.id}
+            key={appt.appointment_id}
             appointment={appt}
             onUpdateStatus={handleStatusUpdate}
           />
@@ -162,7 +157,7 @@ const Appointments = () => {
       <CustomTabPanel value={value} index={1}>
         {appointments.CONFIRMED.map((appt) => (
           <AppointmentCard
-            key={appt.id}
+            key={appt.appointment_id}
             appointment={appt}
             onUpdateStatus={handleStatusUpdate}
           />
@@ -171,13 +166,13 @@ const Appointments = () => {
 
       <CustomTabPanel value={value} index={2}>
         {appointments.COMPLETED.map((appt) => (
-          <AppointmentCard key={appt.id} appointment={appt} />
+          <AppointmentCard key={appt.appointment_id} appointment={appt} />
         ))}
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={3}>
         {appointments.CANCELLED.map((appt) => (
-          <AppointmentCard key={appt.id} appointment={appt} />
+          <AppointmentCard key={appt.appointment_id} appointment={appt} />
         ))}
       </CustomTabPanel>
     </Box>

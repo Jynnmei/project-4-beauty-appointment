@@ -53,7 +53,7 @@ const AppointmentCard = ({ appointment, onUpdateStatus }) => {
           <Button
             variant="outlined"
             color="error"
-            onClick={() => onUpdateStatus(appointment.appointment_id, 4)} // 4 = CANCELLED
+            onClick={() => onUpdateStatus(appointment.appointment_id, 5)} // 5 = CANCELLED
           >
             Cancel
           </Button>
@@ -73,7 +73,7 @@ const AppointmentCard = ({ appointment, onUpdateStatus }) => {
           <Button
             variant="outlined"
             color="error"
-            onClick={() => onUpdateStatus(appointment.appointment_id, 4)} // 4 = CANCELLED
+            onClick={() => onUpdateStatus(appointment.appointment_id, 5)} // 5 = CANCELLED
           >
             Cancel
           </Button>

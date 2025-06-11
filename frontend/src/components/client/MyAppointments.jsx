@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, use } from "react";
 import useFetch from "../../hooks/useFetch.jsx";
 import UserContext from "../../context/user.jsx";
 import "../client/MyAppointments.css";
 import AppointmentEdit from "./AppointmentEdit.jsx";
 
 const MyAppointments = () => {
-  const userCtx = useContext(UserContext);
+  const userCtx = use(UserContext);
   const fetchData = useFetch();
 
   const [appointments, setAppointments] = useState([]);
@@ -47,17 +47,23 @@ const MyAppointments = () => {
   };
 
   const handleUpdate = async (updated) => {
+    // data to be sent, including only fields that are not undefined
+    const dataToSend = {};
+    if (updated.type_ids !== undefined) dataToSend.type_ids = updated.type_ids;
+    if (updated.vendor_ids !== undefined)
+      dataToSend.vendor_ids = updated.vendor_ids;
+    if (updated.service_ids !== undefined)
+      dataToSend.service_ids = updated.service_ids;
+    if (updated.appointment_datetime !== undefined)
+      dataToSend.appointment_datetime = updated.appointment_datetime;
+
     const res = await fetchData(
       `/api/appointment/${updated.appointment_id}`,
       "PATCH",
-      {
-        type_id: updated.type_id,
-        vendor_id: updated.vendor_id,
-        service_id: updated.service_id,
-        appointment_datetime: updated.appointment_datetime,
-      },
+      dataToSend,
       userCtx.accessToken
     );
+
     if (res.ok) loadAppointments();
     else alert("Failed to update.");
   };
@@ -83,7 +89,14 @@ const MyAppointments = () => {
     loadOptions();
   }, [userCtx.user_id, userCtx.accessToken]);
 
-  if (loading) return <p>Loading your appointments...</p>;
+  if (
+    loading ||
+    typeOptions.length === 0 ||
+    vendorOptions.length === 0 ||
+    serviceOptions.length === 0
+  ) {
+    return <p>Loading your appointments...</p>;
+  }
 
   if (appointments.length === 0) return <p>You have no appointments yet.</p>;
 
