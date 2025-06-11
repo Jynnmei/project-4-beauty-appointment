@@ -15,6 +15,22 @@ const NavBarVendor = () => {
               Manage Services
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              className={(navData) => (navData.isActive ? styles.active : "")}
+              to="/viewBooking"
+            >
+              View Booking
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              className={(navData) => (navData.isActive ? styles.active : "")}
+              to="/appointmentsDetails"
+            >
+              Appointments Details
+            </NavLink>
+          </li>
         </ul>
       </nav>
     </header>
