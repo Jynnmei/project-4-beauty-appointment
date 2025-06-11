@@ -64,7 +64,7 @@ export const getAppoinment = async (req, res) => {
     LEFT JOIN service_catalog c ON s.catalog_id = c.catalog_id 
     WHERE a.client_id = $1
     GROUP BY a.appointment_id, a.appointment_datetime, st.name
-    ORDER BY a.appointment_datetime DESC`,
+    ORDER BY a.appointment_datetime ASC`,
       [client_id]
     );
     res.json(result.rows);

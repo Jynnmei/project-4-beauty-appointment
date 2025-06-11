@@ -62,7 +62,7 @@ export const createMultipleImages = async (req, res) => {
 
 // PATCH
 export const updateVendorPriceImage = async (req, res) => {
-  const { vendor_price_images_id } = req.params;
+  const { id } = req.params;
   const file = req.file;
 
   if (!file) {
@@ -73,7 +73,7 @@ export const updateVendorPriceImage = async (req, res) => {
     // 查旧图 URL
     const result = await pool.query(
       `SELECT image_url FROM vendor_price_images WHERE id = $1`,
-      [vendor_price_images_id]
+      [id]
     );
 
     if (result.rows.length === 0) {
@@ -94,7 +94,7 @@ export const updateVendorPriceImage = async (req, res) => {
     // 更新数据库中的 image_url
     const updateResult = await pool.query(
       `UPDATE vendor_price_images SET image_url = $1 WHERE id = $2 RETURNING *`,
-      [uploadResult.secure_url, vendor_price_images_id]
+      [uploadResult.secure_url, id]
     );
 
     res.json({ status: "ok", msg: "Image updated" });
@@ -106,12 +106,12 @@ export const updateVendorPriceImage = async (req, res) => {
 
 // DELETE
 export const deleteVendorPriceImage = async (req, res) => {
-  const { vendor_price_images_id } = req.params;
+  const { id } = req.params;
 
   try {
     const result = await pool.query(
       `SELECT image_url FROM vendor_price_images WHERE id = $1`,
-      [vendor_price_images_id]
+      [id]
     );
 
     if (result.rows.length === 0) {
@@ -134,9 +134,7 @@ export const deleteVendorPriceImage = async (req, res) => {
     // 删除 Cloudinary 文件
     await cloudinary.uploader.destroy(publicId);
 
-    await pool.query(`DELETE FROM vendor_price_images WHERE id = $1`, [
-      vendor_price_images_id,
-    ]);
+    await pool.query(`DELETE FROM vendor_price_images WHERE id = $1`, [id]);
 
     res.json({ status: "ok", msg: "Image deleted successfully" });
   } catch (error) {

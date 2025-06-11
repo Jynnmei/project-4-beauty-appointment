@@ -15,23 +15,63 @@ export const getVendorAppointments = async (req, res) => {
 
     const result = await pool.query(
       `SELECT 
-         a.appointment_id, 
-         a.appointment_datetime,
-         a.client_id,
-         u.username AS client_name,
-         sc.title AS service_title,
-         sc.price,
-         a.status_id
-       FROM appointment a
-       JOIN users u ON a.client_id = u.user_id
-       JOIN service s ON a.service_id = s.service_id
-       JOIN service_catalog sc ON s.catalog_id = sc.catalog_id
-       WHERE a.vendor_id = $1
-       ORDER BY a.appointment_datetime`,
+          a.appointment_id, 
+          a.appointment_datetime, 
+          a.status_id,
+          st.name AS status, 
+          u.username AS client,
+          u.phone AS client_phone,
+          u.address AS client_address,
+          json_agg(DISTINCT t.name) FILTER (WHERE t.name IS NOT NULL) AS types,
+          json_agg(DISTINCT c.title) FILTER (WHERE c.title IS NOT NULL) AS services
+      FROM appointment a
+      LEFT JOIN status st ON a.status_id = st.id
+      LEFT JOIN appointment_type at ON a.appointment_id = at.appointment_id
+      LEFT JOIN types t ON at.type_id = t.id
+      LEFT JOIN appointment_vendor av ON a.appointment_id = av.appointment_id
+      LEFT JOIN users v ON av.vendor_id = v.user_id
+      LEFT JOIN appointment_service aps ON a.appointment_id = aps.appointment_id
+      LEFT JOIN service s ON aps.service_id = s.catalog_id
+      LEFT JOIN service_catalog c ON s.catalog_id = c.catalog_id 
+      LEFT JOIN users u ON a.client_id = u.user_id
+      WHERE av.vendor_id = $1
+      GROUP BY 
+          a.appointment_id, 
+          a.appointment_datetime, 
+          st.name,
+          u.username,
+          u.phone,
+          u.address
+      ORDER BY a.appointment_datetime DESC;`,
       [vendor_id]
     );
+    const grouped = {
+      PENDING: [],
+      CONFIRMED: [],
+      COMPLETED: [],
+      CANCELLED: [],
+    };
 
-    res.json({ status: "ok", data: result.rows });
+    result.rows.forEach((row) => {
+      switch (row.status_id) {
+        case 1:
+          grouped.PENDING.push(row);
+          break;
+        case 2:
+          grouped.CONFIRMED.push(row);
+          break;
+        case 3:
+          grouped.COMPLETED.push(row);
+          break;
+        case 5:
+          grouped.CANCELLED.push(row);
+          break;
+        default:
+          break;
+      }
+    });
+
+    res.json({ status: "ok", data: grouped });
   } catch (error) {
     console.error("Error in getVendorAppointments:", error);
     res

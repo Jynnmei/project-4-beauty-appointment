@@ -22,5 +22,5 @@ export const validateCreateStatusData = [
 
 export const validateUpdateAppointmentStatusData = [
   body("status_id", "Status ID is required").notEmpty(),
-  body("status_id", "Invalid status ID").isInt().isIn([1, 2, 3, 4]),
+  body("status_id", "Invalid status ID").isInt().isIn([1, 2, 3, 5]),
 ];

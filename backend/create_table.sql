@@ -18,9 +18,6 @@ CREATE TABLE roles (
 CREATE TABLE appointment (
   appointment_id serial PRIMARY KEY,
   client_id int REFERENCES users(user_id),
-  type_id int REFERENCES types(id),
-  vendor_id INT REFERENCES users(user_id),
-  service_id INT REFERENCES service(service_id),
   date DATE NOT NULL,
   time TIME NOT NULL,
   status_id int REFERENCES status(id) DEFAULT 1
@@ -93,14 +90,20 @@ ALTER TABLE vendor_price_images
 ADD COLUMN vendor_price_images_id INTEGER REFERENCES vendor_price_images(id) ON DELETE CASCADE;
 
 CREATE TABLE appointment_vendor (
-  appointment_id INT REFERENCES appointment(appointment_id),
-  vendor_id INT REFERENCES users(user_id),
+  appointment_id INT REFERENCES appointment(appointment_id) ON DELETE CASCADE,
+  vendor_id INT REFERENCES users(user_id) ON DELETE CASCADE,
   PRIMARY KEY (appointment_id, vendor_id)
 );
 
 CREATE TABLE appointment_service (
-  appointment_id INT REFERENCES appointment(appointment_id),
-  service_id INT REFERENCES service(service_id),
+  appointment_id INT REFERENCES appointment(appointment_id) ON DELETE CASCADE,
+  service_id INT REFERENCES service(service_id) ON DELETE CASCADE,
   PRIMARY KEY (appointment_id, service_id)
+);
+
+CREATE TABLE appointment_type (
+  appointment_id INT REFERENCES appointment(appointment_id) ON DELETE CASCADE,
+  type_id INT REFERENCES types(id) ON DELETE CASCADE,
+  PRIMARY KEY (appointment_id, type_id)
 );
 
