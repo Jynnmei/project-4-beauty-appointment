@@ -14,7 +14,6 @@ import NavBar from "./NavBar/NavBar.jsx";
 import MyAppointments from "./components/client/MyAppointments.jsx";
 import ManageService from "./components/vendor/ManageService.jsx";
 import NavBarVendor from "./NavBar/NabBarVendor.jsx";
-import ViewBooking from "./components/vendor/ViewBooking.jsx";
 import AppointmentsDetails from "./components/vendor/AppointmentsDetails.jsx";
 
 function App() {
@@ -97,7 +96,6 @@ function App() {
                       path="*"
                       element={<Navigate to="/manageServices" />}
                     />
-                    <Route path="/viewBooking" element={<ViewBooking />} />
                     <Route
                       path="/appointmentsDetails"
                       element={<AppointmentsDetails />}
