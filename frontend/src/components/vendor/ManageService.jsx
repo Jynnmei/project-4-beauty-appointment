@@ -23,13 +23,12 @@ const ManageService = () => {
   // ✅ getAllImages
   const loadImages = async () => {
     const vendor_id = userCtx.user_id;
-    console.log("🔍 Fetching for vendor_id:", vendor_id);
 
     setIsLoading(true);
     const res = await fetchData(
       `/api/img/${vendor_id}`,
       "GET",
-      null,
+      undefined,
       userCtx.accessToken
     );
 
@@ -68,6 +67,7 @@ const ManageService = () => {
       alert("Failed to upload image");
     }
 
+    // Clear the <input type="file"> value so that the same file can be selected again next time.
     event.target.value = "";
   };
 
@@ -102,7 +102,7 @@ const ManageService = () => {
     const res = await fetchData(
       `/api/img/${id}`,
       "DELETE",
-      null,
+      undefined,
       userCtx.accessToken
     );
 
