@@ -18,7 +18,7 @@ const AppointmentForm = () => {
   const [types, setTypes] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [services, setServices] = useState([]);
-  const [priceList, setPriceList] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const AppointmentForm = () => {
 
     const images = priceRes.data?.data || [];
     if (priceRes.ok && images.length > 0) {
-      setPriceList(images.map((item) => item.image_url));
+      setImageUrls(images.map((item) => item.image_url));
     } else {
       console.error("Price list loading failed or empty");
     }
@@ -140,10 +140,6 @@ const AppointmentForm = () => {
         appointmentRes.data?.msg ||
         "Failed to create appointment. You can only book 2 appointments per month";
       setErrorMsg(msg);
-
-      if (msg === "You can only book 2 appointments per month") {
-        alert(msg);
-      }
     }
   };
 
@@ -161,8 +157,8 @@ const AppointmentForm = () => {
       )}
       <h2>Price List</h2>
       <div className="price-list">
-        {priceList.length > 0 ? (
-          priceList.map((url, idx) => (
+        {imageUrls.length > 0 ? (
+          imageUrls.map((url, idx) => (
             <img key={idx} src={url} alt={`Price List ${idx + 1}`} />
           ))
         ) : (

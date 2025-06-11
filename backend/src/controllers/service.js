@@ -31,11 +31,12 @@ export const createService = async (req, res) => {
   const { vendor_id, catalog_id } = req.body;
 
   try {
-    const query = `
-      INSERT INTO service (vendor_id, catalog_id) VALUES ($1, $2) RETURNING *;
-      `;
-    const values = [vendor_id, catalog_id];
-    const result = await pool.query(query, values);
+    const result = await pool.query(
+      `INSERT INTO service (vendor_id, catalog_id) 
+       VALUES ($1, $2) 
+       RETURNING *`,
+      [vendor_id, catalog_id]
+    );
 
     res.json({ status: "ok", msg: "Service added" });
   } catch (error) {

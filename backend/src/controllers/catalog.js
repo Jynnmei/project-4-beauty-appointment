@@ -18,13 +18,12 @@ export const createService = async (req, res) => {
   const { title, description, price, duration } = req.body;
 
   try {
-    const query = `
-      INSERT INTO service_catalog (title, description, price, duration)
-      VALUES ($1, $2, $3, $4)
-      RETURNING *;
-    `;
-    const values = [title, description, price, duration];
-    const result = await pool.query(query, values);
+    const result = await pool.query(
+      `INSERT INTO service_catalog (title, description, price, duration)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [title, description, price, duration]
+    );
 
     res.json({ status: "ok", msg: "Service added" });
   } catch (error) {
