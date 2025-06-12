@@ -69,8 +69,6 @@ Home / Dashboard
 
 ### Environment Variables
 
----
-
 You will need an .env file with the following variables:
 
 ```plaintext
