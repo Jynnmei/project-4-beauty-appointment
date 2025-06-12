@@ -65,8 +65,6 @@ Home / Dashboard
 
 - PostgreSQL
 
----
-
 ### Environment Variables
 
 You will need an .env file with the following variables:
